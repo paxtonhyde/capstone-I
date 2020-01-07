@@ -2,6 +2,8 @@
 
 ## modules
 import pandas as pd
+import boto3
+import time
 import pyspark as ps
 import pyspark.sql.functions as f
 import probability_functions as paxton
@@ -11,24 +13,28 @@ if __name__ == "__main__":
     ## builder
     ## goal is to build a multiple core cluster
     spark = (ps.sql.SparkSession.builder 
-        .master("local") 
-        .appName("pipeline-country")
+        .master("local[*]") 
+        .appName("pipeline")
         .getOrCreate()
         )
     sc = spark.sparkContext
     sc.setLogLevel("WARN")
 
     ## loading responses with survey data into a spark dataframe
-    path = "../data/SharedResponsesSurvey_10000.csv"
+    path = "../data/SharedResponsesSurvey.csv"
     responses = spark.read.csv(path, header=True)
+    responses = responses.select(["UserID", "UserCountry3", "Saved", "Intervention", "CrossingSignal",\
+        "PedPed", "ScenarioType", "AttributeLevel", "Review_age","Review_education", \
+        "Review_gender", "Review_income", "Review_political" ,"Review_religious"])
 
     ## pulling the list of all country ISO3 codes with n > 100
     path = "../data/country_cluster_map.csv"
     countries = spark.read.csv(path, header=True).select("ISO3")
 
     ## creating a pandas dataframe to hold preferences by country
-    pandas_cols = ["ISO3", "p_n_intervention",  "p_n_legality", "p_n_util", "p_n_gender",\
-        "p_n_social", "p_n_age"]
+    pandas_cols = ["ISO3", "p_intervention", "n_intervention", "p_legality", "n_legality",\
+               "p_util", "n_util", "p_gender", "n_gender", \
+               "p_social", "n_social", "p_age", "n_age"]
     factors = ["Utilitarian", "Gender", "Social Status", "Age"]
     country_probs = pd.DataFrame(columns=pandas_cols)
 
@@ -37,11 +43,12 @@ if __name__ == "__main__":
         country = row.ISO3
         country_responses = responses.filter(f"UserCountry3 = '{country}' ") 
         try:
-            country_data_out = [country, paxton.p_intervention(country_responses),\
-                            paxton.p_legality(country_responses)]
+            country_data_out = [str(country)]
+            country_data_out.extend(paxton.p_intervention(country_responses))
+            country_data_out.extend(paxton.p_legality(country_responses))
             for fac in factors:
                 p, n, _, _ = paxton.p_factor(country_responses, fac)
-                country_data_out.append((p,n))
+                country_data_out.extend((p,n))
         except TypeError:
             print(f"{country} had no relevant entries.")
             continue
