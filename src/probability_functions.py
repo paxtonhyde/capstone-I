@@ -1,46 +1,53 @@
 import pyspark as ps
 import pyspark.sql.functions as f
 
-## this one has less counts that p_factor and should be slightly faster
-def p_factor2(dataf, attribute):
+attributes = {"Intervention" : ["Saved = 0 AND Intervention = 0", "Saved = 1 AND Intervention = 1"],\
+        "Legality" : ["Saved = 1 AND CrossingSignal = 1", "Saved = 0 AND CrossingSignal = 2"],\
+        "Utilitarian" : ['More', 'Less'],\
+        "Gender" : ['Male', 'Female'],\
+        "Social Status" : ['High', 'Low'],\
+        "Age" : ['Young', 'Old']}
+
+## this one is universal has less .count() calls than p_factor so should be slightly faster
+def p_factor2(dataframe, attribute):
     '''
+    Returns the proportion of choices probability and sample_size from spark DataFrame dataf 
+    that favored the default choice for attribute.
+        Parameters: dataf (Spark DataFrame), attribute (str)
+        Returns: tuple: (p (float), n (int))
     '''
-    attr = {"Intervention" : ["Saved = 0 AND Intervention = 0", "Saved = 1 AND Intervention = 1"],\
-            "Legality" : ["Saved = 1 AND CrossingSignal = 1", "Saved = 0 AND CrossingSignal = 2"],\
-            "Utilitarian" : ['More', 'Less'],\
-            "Gender" : ['Male', 'Female'],\
-            "Social Status" : ['High', 'Low'],\
-            "Age" : ['Young', 'Old']}
-    
-    ##
+    ## retrieve the conditions describing the attribute
     try:
-        default, nondefault = attr[attribute]
+        default, nondefault = attributes[attribute]
     except KeyError:
-        print("p_factor received an invalid attribute.")
+        print("p_factor received an invalid attribute argument.")
         return None  
 
     ##
     if attribute == "Legality":
-        dataf = dataf.filter("CrossingSignal != 0 AND PedPed = 1")
+        sample = dataframe.filter("CrossingSignal != 0 AND PedPed = 1")
         ## above line credit Edmond Awad, MMFunctionsShared.R
         ## found at: https://osf.io/3hvt2/files/
-        positive = dataf.filter(default or nondefault)
+        positive = dataframe.filter(default or nondefault)
+
     elif attribute == "Intervention":
-        positive = dataf.filter("Saved = Intervention")
-    else:
-        default = f"Saved = 1 AND AttributeLevel = '{default}'"
-        nonnondefault = f"Saved = 0 AND AttributeLevel = '{nondefault}'"
+        positive = dataframe.filter("Saved = Intervention")
 
-        dataf = dataf.filter(f"ScenarioType = '{attribute}' ")
-        positive = dataf.filter(default or nonnondefault)
+    else: ## if attribute is one of ["Utilitarian", "Gender", "Social Status", "Age"]
+        sample = dataframe.filter(f"ScenarioType = '{attribute}' ")
 
-    n = dataf.count()
+        default_choice = f"Saved = 1 AND AttributeLevel = '{default}'"
+        nonnondefault_choice = f"Saved = 0 AND AttributeLevel = '{nondefault}'"
+        positive = dataframe.filter(default_choice or nonnondefault_choice)
+
+    ##
+    sample_size = sample.count()
     try:
-        p = positive.count() / n
+        probability = positive.count() / sample_size
     except ZeroDivisionError:
-        p = -1
+        probability = -1
     
-    return (p, n)
+    return (probability, sample_size)
 
 def p_factor(dataf, attribute):
     '''
@@ -51,17 +58,10 @@ def p_factor(dataf, attribute):
         Parameters: dataf (Spark Dataframe), attribute (str)
         Returns: tuple: p (float), default (str), nondefault (str), 
     '''
-    attr = {"Utilitarian" : ['More', 'Less']\
-              , "Gender" : ['Male', 'Female']\
-              , "Social Status" : ['High', 'Low']\
-              , "Age" : ['Young', 'Old']\
-             , "Species" : []\
-             , "Fitness" : []}
-    try:
-        default, nondefault = attr[attribute]
-    except KeyError:
+    if attribute not in ["Utilitarian", "Gender", "Social Status", "Age"]:
         print("p_factor received an invalid attribute.")
-        return None  
+        return None
+    default, nondefault = attributes[attribute]
     
     factor = dataf.filter(f"ScenarioType = '{attribute}' ")
     n = factor.count()
