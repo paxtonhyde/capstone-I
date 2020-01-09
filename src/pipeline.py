@@ -1,33 +1,43 @@
 ## pipeline script for country-level data
 
-## modules
 import time
 import os
 import argparse
-
 import pandas as pd
 import numpy as np
 import boto3
-
+from botocore.exceptions import ClientError
 import pyspark as ps
 import pyspark.sql.functions as f
-
 import probability_functions as paxton
 
-## global path variables
 SCRIPT_DIRECTORY = os.path.realpath("")
-HOME_DIR = os.path.split(SCRIPT_DIRECTORY)[0]
-DATA_DIR = os.path.join(HOME_DIR, "data")
+HOME_DIRECTORY = os.path.split(SCRIPT_DIRECTORY)[0]
+DATA_DIRECTORY = os.path.join(HOME_DIRECTORY, "data")
 
-def loadfile(filename, bucket):
-    path = f'{DATA_DIR}/{filename}'
-    if filename not in os.listdir(DATA_DIR):
+## functions for reading and writing files to and from spark
+def loaddata(filename, sparkobject, s3bucket):
+    path = f'{DATA_DIRECTORY}/{filename}'
+    if filename not in os.listdir(DATA_DIRECTORY):
         s3_client = boto3.client('s3')
-        s3_client.download_file(bucket,\
+        s3_client.download_file(s3bucket,\
                         filename,\
                         path)
     extension = filename.split('.')[1]
-    return spark.read.load(path, format = extension, header='true')
+    return sparkobject.read.load(path, format = extension, header='true')
+
+def uploaddata(sparkdataframe, filename, s3bucket, mode="overwrite"):
+    path = f'{DATA_DIRECTORY}/{filename}'
+    extension = filename.split('.')[1]
+    sparkdataframe.write.save(path=path, format=extension, mode=mode)
+
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_file(path, s3bucket, filename)
+    except ClientError:
+        print(f"Failed uploading {filename} to bucket {s3bucket}.")
+    
+    return True
 
 if __name__ == "__main__":
     ## argument parsing
@@ -49,7 +59,7 @@ if __name__ == "__main__":
     ## SharedResponsesSurvey.csv has 11286141 rows
     bucketname = 'paxton-dsi-capstone-i'
     fname = args['file']
-    responses = loadfile(fname, bucketname)
+    responses = loaddata(fname, spark, bucketname)
 
     ## pick/sample responses
     responses = responses.select(["UserID", "UserCountry3", "Saved", "Intervention", "CrossingSignal",\
@@ -57,7 +67,7 @@ if __name__ == "__main__":
         "Review_gender", "Review_income", "Review_political" ,"Review_religious"])
 
     ## pulling the list of all country ISO3 codes
-    countries = loadfile('country_cluster_map.csv', bucketname).select("ISO3")
+    countries = loaddata('country_cluster_map.csv', spark, bucketname).select("ISO3")
     ## creating a pandas dataframe to hold preferences by country
     pandas_cols = ["ISO3", "p_intervention", "n_intervention", "p_legality", "n_legality",\
                "p_util", "n_util", "p_gender", "n_gender", \
@@ -92,11 +102,13 @@ if __name__ == "__main__":
 
     ## writing the pandas dataframe to a new .csv file
     fname = "country_preferences.csv"
-    path = f"{DATA_DIR}/{fname}"
+    path = f"{DATA_DIRECTORY}/{fname}"
     country_probs.to_csv(path_or_buf=path, index=False)
     print(f"Wrote data to {fname}")
     
     s3_client = boto3.client('s3')
-    t = s3_client.upload_file(path, bucketname, fname)
-    if t:
-        print(f"Uploaded {fname} to {bucketname}.")
+    try:
+        response = s3_client.upload_file(path, bucketname, fname)
+    except ClientError:
+        print(f"Failed uploading {fname} to bucket {bucketname}.")
+    print(f"Uploaded {fname} to {bucketname}.")
