@@ -4,24 +4,40 @@
 ## Question
 
 ## Data
-The data were collected through [the Moral Machine](http://moralmachine.mit.edu/), an online survey game created by MIT artificial intelligence researchers. Users decide the morally preferable action for an autonomous vehicle from two scenarios presented by the game. A game session lasts 13 rounds, after which the user has the option to provide demographic information including their age, gender, annual income, country, and political and religious orientation on a sliding scale. 
+The data were collected through [the Moral Machine](http://moralmachine.mit.edu/), an online survey game created by MIT artificial intelligence researchers. Users decide the morally preferable action for an autonomous vehicle from two scenarios presented by the game. Each game session is 13 choices long. At the end of the sessions, the user has the option to provide demographic information including their age, gender, annual income, country, and political and religious orientation on a sliding scale. 
 
-#### Description of tables
-*SharedResponses.csv* – Unique response identification, session, user, and detailed scenario data.
+Below is an example of a choice on the Moral Machine.
 
-*SharedResponsesFullFirstSessions.csv* – ResponseID,ExtendedSessionID,UserID,ScenarioOrder,Intervention,PedPed,Barrier,CrossingSignal,AttributeLevel,ScenarioTypeStrict,ScenarioType,DefaultChoice,NonDefaultChoice,DefaultChoiceIsOmission,NumberOfCharacters,DiffNumberOFCharacters,Saved,Template,DescriptionShown,LeftHand,UserCountry3
+![A choice](images/machine.png)
 
-*SharedResponsesSurvey.csv* – ResponseID,ExtendedSessionID,UserID,ScenarioOrder,Intervention,PedPed,Barrier,CrossingSignal,AttributeLevel,ScenarioTypeStrict,ScenarioType,DefaultChoice,NonDefaultChoice,DefaultChoiceIsOmission,NumberOfCharacters,DiffNumberOFCharacters,Saved,Template,DescriptionShown,LeftHand,UserCountry3,Review_age,Review_education,Review_gender,Review_income,Review_political,Review_religious
+Although the data is publicly [available](https://osf.io/3hvt2/?view_only=4bb49492edee4a8eb1758552a362a2cf), the column labels were quite cryptic.
+```
+ScenarioOrder,Intervention,PedPed,Barrier,CrossingSignal,AttributeLevel,ScenarioTypeStrict,ScenarioType,DefaultChoice,NonDefaultChoice,DefaultChoiceIsOmission,NumberOfCharacters,DiffNumberOFCharacters,Saved,Template,DescriptionShown,LeftHand
 
-countryInfo.csv – Country-specific information, particularly country ISO code, continent, languages, population, and area.
-country_cluster_map.csv – Country ISO code, name, and cluster (0, 1, or 2, corresponding to East, West, and South).
-cultures.csv – Country name and general category culture from: Catholic, Protestant, English, Islamic, Orthodox, Confucian, Baltic, LatinAmerica, SouthAsia, or none.
-moral_distance.csv – Country name, distance metric (USA = 0, max ~6 (Brunei))
-CountriesChangePr.csv – By-country estimate and standard error for moral preferences including omission/commission, passengers/pedestrians, gender, fitness, social status, age, legality, and species. 
+13,0,0,0,0,Female,Gender,Gender,Male,Female,0,2,0,1,Desktop,0,0
+```
 
-One line of the data
+Each row of the data represents either panel of each scenario. For the right panel in the image above:
+```
+Intervention = 0
+PedPed = 1 // choice between two groups of pedestrians
+Barrier = 0
+CrossingSignal = 1 // 0 means there is no signal in the picture, 1 means the character spared is crossing legally, 2 means the character spared is jaywalking
+AttributeLevel = Hooman
+ScenarioType = Species
+DefaultChoice = Hooman
+NonDefaultChoice = Pets
+DefaultChoiceIsOmission = 0 // default choice does not require the car to change course
+NumberOfCharacters = 1
+DiffNumberOFCharacters = 0 // The number of characters killed is consistent no matter the choice
+Saved = 1 // The right panel is the one I pick
+DescriptionShown = 0
+LeftHand = 0
 
-#### Descriptions of columns
+```
+## Spark Efficiency
+
+![alt text](images/functions.png)
 
 ## References
 * MIT Technology Review [link to article](https://www.technologyreview.com/s/612341/a-global-ethics-study-aims-to-help-ai-solve-the-self-driving-trolley-problem/?utm_medium=tr_social&utm_campaign=site_visitor.unpaid.engagement&utm_source=Twitter#Echobox=1576511368 "Should a self-driving car kill the baby or the grandma? Depends on where you’re from.")
