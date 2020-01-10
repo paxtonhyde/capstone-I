@@ -67,7 +67,7 @@ I ran my calculations with Apache Spark on an Amazon Linux c4.8xlarge EC2 instan
 
 After working through the calculations, I got as far as grouping by the country clusters identified in the Nature paper. Here I only present a hypothesis test for the difference in gender preferences by cluster.
 
-I may have reduced the sample size by calculating means by country rather by individual. I tried to avoid this shortcoming of my method by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities. The advantage of this method is that the country-level data was small and could be processed on a local machine.
+Directly analyzing country-level means does not account for the relative number of responses from each country. I tried to avoid this shortcoming of my method by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities. The advantage of this method is that the country-level data was small and could be processed on a local machine.
 
 After bootstrapping an independent *t*-test gave incredibly small *p*-values for almost all the preferences, which makes me somewhat skeptical of my methods. On the other hand, we would expect small *p*-values because the sample size of individual responses is quite large.
 
@@ -88,6 +88,8 @@ After bootstrapping an independent *t*-test gave incredibly small *p*-values for
 (Note that these values are unrounded, maybe `scipy.stats.ttest_ind()` rounds very very small numbers to 0.)
 
 #### Without bootstrapping
+Note that this direct (non-bootstrapped) test of country-level means does not control for the relative number of responses from each country.
+
 <p align="center">
   <img src="images/gender_hists.png" width = 750 height = 800>
   <img src="images/gender_distributions.png" width = 600 height = 400>
