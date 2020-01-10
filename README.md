@@ -1,4 +1,4 @@
-# compelling title
+# Does geography determine moral preferences?
 
 Paxton Hyde
 
@@ -49,6 +49,9 @@ LeftHand = 0
 
 The authors of the Moral Machine paper found, unsurprisingly, that there were some strong global preferences for saving humans over animals, more people over fewer, and the young over the old. They created three clusters of countries (West, East, and South) [each with a unique profile of preferences.](/images/MIT_cluster_profiles.png)
 
+
+I wanted to ask whether we can reasonably claim that moral preferences vary based on geography.
+
 My goal was to group countries by metrics including cluster, type of political system, and percentile groups for different human development indexes (GII, GINI, CPI, etc.) and run significance tests for differences in each factor.
 
 ### Method
@@ -65,7 +68,7 @@ I got as far as grouping by the country clusters identified in the Nature paper 
 
 The data I used may not have been the complete set. Only 72 countries had any responses and many very few. This skewed the overall mean because countries only a few responses would have a more extreme mean for any preference. I tried to avoid this problem by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities.
 
-After bootstrapping an independent *t*-test gave incredibly small *p*-values for almost all the preferences, which makes me skeptical.
+After bootstrapping an independent *t*-test gave incredibly small *p*-values for almost all the preferences, which made me skeptical.
 
 The plots below are illustrative though maybe not particularly enlightening. I included both the bootstrapped and raw versions for educational purposes.
 
@@ -88,6 +91,7 @@ We would expect small *p*-values because the sample size is large, even if the d
 ![Distributions](images/gender_distributions.png)
 
 The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show no significant differences.
+
 |       |    West |    East |   South |
 |-------|---------|---------|---------|
 | West  | 0       | 0.83088 | 0.48091 |
@@ -102,7 +106,7 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 
 2. Design the statistical test thoroughly before collecting data or writing the pipeline. I thought I had done this  well enough but my mind must still be more philosophical than statistical.
 
-3. It is easy to end up with different file versions on AWS EC2 instance and your local machine. My solution was to write functions for reading and writing data that interact with an S3 bucket. `loaddata` looks first in the local `\data` directory before fetching from S3, and `uploaddata` writes both locally and to S3. This saves some `scp`'ing and makes it certain that the most up-to-date copy is on AWS.
+3. It is easy to end up with different file versions on AWS EC2 instance and your local machine. My solution was to write functions for reading and writing data that interact with an S3 bucket. `loaddata` looks first in the local directory before fetching from S3, and `uploaddata` writes both locally and to S3. This saves some `scp`'ing and makes it certain that the most up-to-date copy is on AWS.
 
 4. Create an `~/.aws/credentials` file and put your EC2 instance credentials there before doing anything else on a new instance. Then you won't have to worry about it afterwards.
 
@@ -111,19 +115,24 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 
 ## Spark Efficiency
 
-While trying to make my computations faster, I decided to rework my pipeline functions to reduce the number of Spark *actions* that I called. My new function called `.count()` 2 rather than three times.
+While trying to make my computations faster, I reworked my pipeline function to reduce the number of Spark *actions* it called. The new function calls `.count()` twice rather than three times. Below are the results running on a `c4.8xlarge`.[^1]
 
 ![alt text](images/functions.png)
 
-By a back-of-the-napkin calculation, if the function execution time was reduced by 2 seconds, I saved myself $$(130 countries * 6 preferences * 2 seconds) = 1560 seconds or 26 minutes$$. In any case
+I also tested the speeds of several simple Spark functions for fun: `.filter()` and `.groupby()` are lazily-evaluated *transformations*, while `.count()` is an *action* and thus takes significantly longer to execute.
 
-![alt text](images/comparison.png)
 ![alt text](images/comparison2.png)
 
+`.filter()` and `.groupby()` appear to be approximately constant time. `.count()` is slower, but almost appears constant up to a certain point when it increases.
 
+Another interesting tidbit: the data graphed above actually omits the first datapoint on 10 samples. Below is the full data. I would guess that the first execution is longer either because the processor is switching tasks, or because Spark remembers something about the operation which makes subsequent executions of the same operation faster.
+
+![alt text](images/comparison.png)
 
 [Back to top](#content)
 ## References
-* MIT Technology Review [link to article](https://www.technologyreview.com/s/612341/a-global-ethics-study-aims-to-help-ai-solve-the-self-driving-trolley-problem/?utm_medium=tr_social&utm_campaign=site_visitor.unpaid.engagement&utm_source=Twitter#Echobox=1576511368 "Should a self-driving car kill the baby or the grandma? Depends on where you’re from.")
-* Nature [link to paper](https://www.nature.com/articles/s41586-018-0637-6.epdf?referrer_access_token=5SBKjXqSe9W89TIoohZIvNRgN0jAjWel9jnR3ZoTv0OR8PKa5Kws8ZzsJ9c7-2Qpul1Vc1F8wY0eIbuOUfmConm9MpvB9JNjnmyrCoj2uOCRbTFI3tmUdV2tYqE2L6ifmrb-tsgAoOc9lINEcKDSOkEkmhLSjqz8bf1ACffMhu6EiQ2ZXU5cHbrFXuiJoXRMxuojb8tUZNFuN2R4kksBNzsaFxxkByF7rx-cxTgMCGvimdjBOY0vMtRkwpXvk9EyI0NunRjTj6Bi1No-Hv00gQBUqxE6xdxW_2lzO7zwdeMnyED_zlEwNHFqcd9GAeuWl-CtPy9UtgwYO_5VKTLt50rGC5vG2pcPQsAXVtbF58CCLdPZcJHGJit56_0t8-lq0fjzKjPGd6HBGyxlP6-5HpLh6sV0tO9TjZmLkIKUVFKNZPjEb8N5_Ysqk0IbycCC&tracking_referrer=www.technologyreview.com "The Moral Machine Experiment")
+* [MIT Technology Review article](https://www.technologyreview.com/s/612341/a-global-ethics-study-aims-to-help-ai-solve-the-self-driving-trolley-problem/?utm_medium=tr_social&utm_campaign=site_visitor.unpaid.engagement&utm_source=Twitter#Echobox=1576511368 "Should a self-driving car kill the baby or the grandma? Depends on where you’re from.")
+* [Nature paper](https://www.nature.com/articles/s41586-018-0637-6.epdf?referrer_access_token=5SBKjXqSe9W89TIoohZIvNRgN0jAjWel9jnR3ZoTv0OR8PKa5Kws8ZzsJ9c7-2Qpul1Vc1F8wY0eIbuOUfmConm9MpvB9JNjnmyrCoj2uOCRbTFI3tmUdV2tYqE2L6ifmrb-tsgAoOc9lINEcKDSOkEkmhLSjqz8bf1ACffMhu6EiQ2ZXU5cHbrFXuiJoXRMxuojb8tUZNFuN2R4kksBNzsaFxxkByF7rx-cxTgMCGvimdjBOY0vMtRkwpXvk9EyI0NunRjTj6Bi1No-Hv00gQBUqxE6xdxW_2lzO7zwdeMnyED_zlEwNHFqcd9GAeuWl-CtPy9UtgwYO_5VKTLt50rGC5vG2pcPQsAXVtbF58CCLdPZcJHGJit56_0t8-lq0fjzKjPGd6HBGyxlP6-5HpLh6sV0tO9TjZmLkIKUVFKNZPjEb8N5_Ysqk0IbycCC&tracking_referrer=www.technologyreview.com "The Moral Machine Experiment")
 
+#### Notes
+[^1]By a back-of-the-napkin calculation, if the function execution time was reduced by 2 seconds, I saved myself $$(130 countries X 6 preferences X 2 seconds) = 1560 seconds or 26 minutes. Considering that the calculation took less than 10 minutes on the EC2, this is dubious.
