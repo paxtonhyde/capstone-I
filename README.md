@@ -65,7 +65,7 @@ I ran my calculations with Apache Spark on an Amazon Linux c4.8xlarge EC2 instan
 
 ## Results
 
-I got as far as grouping by the country clusters identified in the Nature paper before encountering some hiccups with my statistical analysis.
+After working through the calculations, I got as far as grouping by the country clusters identified in the Nature paper. Here I only present a hypothesis test for the difference in gender preferences by cluster.
 
 I may have reduced the sample size by calculating means by country rather by individual. I tried to avoid this shortcoming of my method by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities. The advantage of this method is that the country-level data was small and could be processed on a local machine.
 
