@@ -74,11 +74,9 @@ The plots below are illustrative though maybe not particularly enlightening. I i
 
 #### With bootstrapping
 <p align="center">
-  <img src="images/gender_histsbooted.png" width = 800 height = 800>
+  <img src="images/gender_histsbooted.png" width = 750 height = 800>
   <img src="images/gender_distributionsbooted.png" width = 600 height = 400>
 </p>
-![Histogram](images/gender_histsbooted.png)
-![Distributions](images/gender_distributionsbooted.png)
 
 *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show all significant differences. We expect that the South cluster would be more significantly different from East than West based on the professional results. 
 
@@ -92,11 +90,9 @@ We would expect small *p*-values because the sample size is large, even if the d
 
 #### Without bootstrapping
 <p align="center">
-  <img src="images/gender_hists.png" width = 800 height = 800>
+  <img src="images/gender_hists.png" width = 750 height = 800>
   <img src="images/gender_distributions.png" width = 600 height = 400>
 </p>
-![Histogram](images/gender_hists.png)
-![Distributions](images/gender_distributions.png)
 
 The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show no significant differences.
 
@@ -125,19 +121,21 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 
 While trying to make my computations faster, I reworked my pipeline function to reduce the number of Spark *actions* it called. The new function calls `.count()` twice rather than three times. Below are the results running on a `c4.8xlarge`.[^1]
 <p align="center">
-  <img src="images/functions.png" width = 500 height = 500d>
+  <img src="images/functions.png" width = 600 height = 600>
 </p>
-![alt text](images/functions.png)
 
 I also tested the speeds of several simple Spark functions for fun: `.filter()` and `.groupby()` are lazily-evaluated *transformations*, while `.count()` is an *action* and thus takes significantly longer to execute.
 
-![alt text](images/comparison2.png)
+<p align="center">
+  <img src="images/comparisons2.png" width = 750 height = 800>
+</p>
 
 `.filter()` and `.groupby()` appear to be approximately constant time. `.count()` is slower, but almost appears constant up to a certain point when it increases.
 
 Another interesting tidbit: the data graphed above actually omits the first datapoint on 10 samples. Below is the full data. I would guess that the first execution is longer either because the processor is switching tasks, or because Spark remembers something about the operation which makes subsequent executions of the same operation faster.
-
-![alt text](images/comparison.png)
+<p align="center">
+  <img src="images/comparisons.png" width = 750 height = 800>
+</p>
 
 [Back to top](#content)
 ## References
