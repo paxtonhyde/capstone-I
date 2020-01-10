@@ -29,5 +29,6 @@ def uploaddata(sparkdataframe, filename, s3bucket, mode="overwrite"):
         response = s3_client.upload_file(path, s3bucket, filename)
     except ClientError:
         print(f"Failed uploading {filename} to bucket {s3bucket}.")
+        return False
     
     return True

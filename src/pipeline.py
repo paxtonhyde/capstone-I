@@ -1,5 +1,3 @@
-## pipeline script for country-level data
-
 import time
 import os
 import argparse
@@ -36,11 +34,8 @@ if __name__ == "__main__":
     bucketname = 'paxton-dsi-capstone-i'
     fname = args['file']
     responses = loaddata(fname, spark, bucketname)
-
-    ## pick/sample responses
     responses = responses.select(["UserID", "UserCountry3", "Saved", "Intervention", "CrossingSignal",\
-        "PedPed", "ScenarioType", "AttributeLevel", "Review_age","Review_education", \
-        "Review_gender", "Review_income", "Review_political" ,"Review_religious"])
+        "PedPed", "ScenarioType", "AttributeLevel"])
 
     ## pulling the list of all country ISO3 codes
     countries = loaddata('country_cluster_map.csv', spark, bucketname).select("ISO3")
@@ -76,15 +71,8 @@ if __name__ == "__main__":
 
         print(f"Wrote data for {country}.")
 
-    ## writing the pandas dataframe to a new .csv file
+    ## writing the pandas dataframe to /data and s3 bucket
     fname = "country_preferences.csv"
-    path = f"{DATA_DIRECTORY}/{fname}"
-    country_probs.to_csv(path_or_buf=path, index=False)
-    print(f"Wrote data to {fname}")
-    
-    s3_client = boto3.client('s3')
-    try:
-        response = s3_client.upload_file(path, bucketname, fname)
-    except ClientError:
-        print(f"Failed uploading {fname} to bucket {bucketname}.")
-    print(f"Uploaded {fname} to {bucketname}.")
+    t = uploaddata(country_probs, fname, bucketname)
+    if t:
+        print(f"Uploaded {fname} to {bucketname}.")

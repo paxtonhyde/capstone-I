@@ -75,6 +75,7 @@ def p_factor(dataf, attribute):
         #print("p_factor received a dataframe without revelant entries.")
         return None
 
+## One might say these are "deprecated" :
 def p_intervention(dataf):
     '''
     Returns the proportion of choices in dataf that favored
