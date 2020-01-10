@@ -93,7 +93,7 @@ We would expect small *p*-values because the sample size is large, even if the d
   <img src="images/gender_distributions.png" width = 600 height = 400>
 </p>
 
-The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters also some significant differences for a significance level of 0.10. The Southern cluster was significantly different from the other clusters, which is what we expect based on the professional results.<sup>[1](#footnote1)</sup>
+The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters still show some significant differences for a significance level of 0.10. The Southern cluster was significantly different from the other clusters, which is what we expect based on the professional results.<sup>[1](#footnote1)</sup>
 
 |       |      West |      East |     South |
 |-------|-----------|-----------|-----------|
@@ -143,4 +143,5 @@ Another interesting tidbit: the data graphed above actually omits the first data
 
 #### Notes
 <a name="footnote1">1</a>: "For example, countries belonging to the Southern cluster show a strong preference for sparing females compared to countries in other clusters."
+
 <a name="footnote1">2</a>: By a back-of-the-napkin calculation, if the function execution time was reduced by 2 seconds, I saved myself (130 countries X 6 preferences X 2 seconds) = 1560 seconds or 26 minutes. Considering that the calculation took less than 10 minutes on the EC2, I can't be sure of this estimate.
