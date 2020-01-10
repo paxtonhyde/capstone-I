@@ -73,6 +73,10 @@ After bootstrapping an independent *t*-test gave incredibly small *p*-values for
 The plots below are illustrative though maybe not particularly enlightening. I included both the bootstrapped and raw versions for educational purposes.
 
 #### With bootstrapping
+<p align="center">
+  <img src="images/gender_histsbooted.png" width = 600 height = 500>
+  <img src="images/gender_distributionsbooted.png" width = 600 height = 400>
+</p>
 ![Histogram](images/gender_histsbooted.png)
 ![Distributions](images/gender_distributionsbooted.png)
 
