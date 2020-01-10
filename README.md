@@ -81,12 +81,6 @@ The plots below are illustrative though maybe not particularly enlightening. I i
 
 *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show all significant differences. We expect that the South cluster would be more significantly different from East than West based on the professional results. 
 
-|       |    West |    East |   South |
-|-------|---------|---------|---------|
-| West  | 0       | 0.07638 | 0.03944 |
-| East  | 0.07638 | 0       | 0.13219 |
-| South | 0.03944 | 0.13219 | 0       |
-
 We would expect small *p*-values because the sample size is large, even if the data was incomplete.
 
 #### Without bootstrapping
@@ -95,13 +89,7 @@ We would expect small *p*-values because the sample size is large, even if the d
   <img src="images/gender_distributions.png" width = 600 height = 400>
 </p>
 
-The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show no significant differences.
-
-|       |    West |    East |   South |
-|-------|---------|---------|---------|
-| West  | 0       | 0.83088 | 0.48091 |
-| East  | 0.83088 | 0       | 0.53105 |
-| South | 0.48091 | 0.53105 | 0       |
+The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show all significant differences.
 
 > Sorry, Mike!
 
