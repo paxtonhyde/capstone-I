@@ -74,7 +74,7 @@ The plots below are illustrative though maybe not particularly enlightening. I i
 
 #### With bootstrapping
 <p align="center">
-  <img src="images/gender_histsbooted.png" width = 800 height = 600>
+  <img src="images/gender_histsbooted.png" width = 800 height = 800>
   <img src="images/gender_distributionsbooted.png" width = 600 height = 400>
 </p>
 ![Histogram](images/gender_histsbooted.png)
@@ -92,7 +92,7 @@ We would expect small *p*-values because the sample size is large, even if the d
 
 #### Without bootstrapping
 <p align="center">
-  <img src="images/gender_hists.png" width = 800 height = 600>
+  <img src="images/gender_hists.png" width = 800 height = 800>
   <img src="images/gender_distributions.png" width = 600 height = 400>
 </p>
 ![Histogram](images/gender_hists.png)
@@ -124,7 +124,9 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 ## Spark Efficiency
 
 While trying to make my computations faster, I reworked my pipeline function to reduce the number of Spark *actions* it called. The new function calls `.count()` twice rather than three times. Below are the results running on a `c4.8xlarge`.[^1]
-
+<p align="center">
+  <img src="images/functions.png" width = 500 height = 500d>
+</p>
 ![alt text](images/functions.png)
 
 I also tested the speeds of several simple Spark functions for fun: `.filter()` and `.groupby()` are lazily-evaluated *transformations*, while `.count()` is an *action* and thus takes significantly longer to execute.
