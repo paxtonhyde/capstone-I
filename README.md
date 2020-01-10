@@ -65,11 +65,11 @@ I ran my calculations with Apache Spark on an Amazon Linux c4.8xlarge EC2 instan
 
 ## Results
 
-I got as far as grouping by the country clusters identified in the Nature paper before encountering some problems with my statistical analysis.
+I got as far as grouping by the country clusters identified in the Nature paper before encountering some hiccups with my statistical analysis.
 
-The data I used may not have been the complete set. Only 72 countries had any responses and many very few. This skewed the overall mean because countries only a few responses would have a more extreme mean for any preference. I tried to avoid this problem by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities.
+I may have reduced the sample size by calculating means by country rather by individual. I tried to avoid this shortcoming of my method by bootstrapping individual preferences for each country cluster. NumPy has a `.random.choice()` sampling method that makes it very easy to sample with weighted probabilities. The advantage of this method is that the country-level data was small and could be processed on a local machine.
 
-After bootstrapping an independent *t*-test gave incredibly small *p*-values for almost all the preferences, which makes me skeptical of my methods.
+After bootstrapping an independent *t*-test gave incredibly small *p*-values for almost all the preferences, which makes me somewhat skeptical of my methods. On the other hand, we would expect small *p*-values because the sample size of individual responses is quite large.
 
 #### With bootstrapping
 <p align="center">
@@ -77,7 +77,7 @@ After bootstrapping an independent *t*-test gave incredibly small *p*-values for
   <img src="images/gender_distributionsbooted.png" width = 600 height = 400>
 </p>
 
-*p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show all significant differences for a significance level of 0.10. (These values are unrounded, maybe `stats.ttest_ind()` rounds very small numbers to 0.)
+*p*-values from an independent *t*-test with unequal variances for gender preferences between clusters show all significant differences for a significance level of 0.10.
 
 |       |   West |   East |   South |
 |-------|--------|--------|---------|
@@ -85,7 +85,7 @@ After bootstrapping an independent *t*-test gave incredibly small *p*-values for
 | East  |      0 |      - |       0 |
 | South |      0 |      0 |       - |
 
-We would expect small *p*-values because the sample size is large, even if the data was incomplete.
+(Note that these values are unrounded, maybe `scipy.stats.ttest_ind()` rounds very very small numbers to 0.)
 
 #### Without bootstrapping
 <p align="center">
