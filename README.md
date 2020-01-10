@@ -93,7 +93,7 @@ After bootstrapping an independent *t*-test gave incredibly small *p*-values for
   <img src="images/gender_distributions.png" width = 600 height = 400>
 </p>
 
-The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters still show some significant differences for a significance level of 0.10. The Southern cluster was significantly different from the other clusters, which is what we expect based on the professional results.<sup>[1](#footnote1)</sup>
+The *p*-values from an independent *t*-test with unequal variances for gender preferences between clusters still show some significant differences for a significance level of 0.10. The Eastern cluster seems significantly different from the other clusters, which is not exactly what we expect based on the professional results.<sup>[1](#footnote1)</sup>
 
 |       |      West |      East |     South |
 |-------|-----------|-----------|-----------|
