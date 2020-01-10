@@ -1,6 +1,6 @@
 # Does geography determine moral preferences?
 <p align="center">
-  <img src="images/header.png" width = 800 height = 100>
+  <img src="images/header.png" width = 900 height = 150>
 </p>
 Paxton Hyde
 
