@@ -74,7 +74,7 @@ The plots below are illustrative though maybe not particularly enlightening. I i
 
 #### With bootstrapping
 <p align="center">
-  <img src="images/gender_histsbooted.png" width = 600 height = 500>
+  <img src="images/gender_histsbooted.png" width = 800 height = 600>
   <img src="images/gender_distributionsbooted.png" width = 600 height = 400>
 </p>
 ![Histogram](images/gender_histsbooted.png)
@@ -91,6 +91,10 @@ The plots below are illustrative though maybe not particularly enlightening. I i
 We would expect small *p*-values because the sample size is large, even if the data was incomplete.
 
 #### Without bootstrapping
+<p align="center">
+  <img src="images/gender_hists.png" width = 800 height = 600>
+  <img src="images/gender_distributions.png" width = 600 height = 400>
+</p>
 ![Histogram](images/gender_hists.png)
 ![Distributions](images/gender_distributions.png)
 
