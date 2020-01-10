@@ -1,5 +1,7 @@
 # Does geography determine moral preferences?
-
+<p align="center">
+  <img src="images/header.jpg" width = 600 height = 100>
+</p>
 Paxton Hyde
 
 Galvanize Data Science Immersive Capstone 1, January 2020
@@ -12,7 +14,7 @@ Galvanize Data Science Immersive Capstone 1, January 2020
 - [References](#references)
 ## Context
 ### Data
-The data were collected through [the Moral Machine](http://moralmachine.mit.edu/), an online game created by MIT researchers. Users decide the morally preferable action for an autonomous vehicle from two scenarios presented by the game. Each game session is 13 choices long. At the end of the sessions, the user has the option to provide demographic information including their age, gender, annual income, country, and political and religious orientation on a sliding scale. 
+The data were collected through [the Moral Machine](http://moralmachine.mit.edu/), an online serious game created by MIT researchers. Users decide the morally preferable action for an autonomous vehicle from two scenarios presented by the game. Each game session is 13 choices long. At the end of the sessions, the user has the option to provide demographic information including their age, gender, annual income, country, and political and religious orientation on a sliding scale. 
 
 An example of a choice on the Moral Machine.
 
