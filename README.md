@@ -18,7 +18,7 @@ An example of a choice on the Moral Machine.
 
 ![A choice](images/machine.png)
 
-Moral Machine data are publicly [available](https://osf.io/3hvt2/?view_only=4bb49492edee4a8eb1758552a362a2cf). Nonetheless, the column names are fairly cryptic and understanding them required parsing the code in the project repository.
+Moral Machine data are publicly [available](https://osf.io/3hvt2/?view_only=4bb49492edee4a8eb1758552a362a2cf). Nonetheless, the column names are fairly cryptic and understanding them required parsing the researchers' code in the project repository.
 ```
 ScenarioOrder,Intervention,PedPed,Barrier,CrossingSignal,AttributeLevel,ScenarioTypeStrict,ScenarioType,
 DefaultChoice,NonDefaultChoice,DefaultChoiceIsOmission,NumberOfCharacters,DiffNumberOFCharacters,Saved,Template,
@@ -47,10 +47,9 @@ LeftHand = 0
 
 ### Question
 
-The authors of the Moral Machine paper found, unsurprisingly, that there were some strong global preferences for saving humans over animals, more people over fewer, and the young over the old. They created three clusters of countries (West, East, and South) [each with a unique profile of preferences.](/images/MIT_cluster_profiles.png)
+The authors of the Moral Machine paper found that there were some strong global preferences for saving humans over animals, more people over fewer, and the young over the old. They created three clusters of countries (West, East, and South) [each with a unique profile of preferences.](/images/MIT_cluster_profiles.png)
 
-
-I wanted to ask whether we can reasonably claim that moral preferences vary based on geography.
+> I wanted to ask whether we can reasonably claim that moral preferences vary based on geography.
 
 My goal was to group countries by metrics including cluster, type of political system, and percentile groups for different human development indexes (GII, GINI, CPI, etc.) and run significance tests for differences in each factor.
 
@@ -106,7 +105,7 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 
 ## Takeaways
 
-1. It is difficult to know what to do with ambiguously-labelled data. I thought understood my dataset after reading the code used to generate the results in the Nature paper, but maybe not. At the very least, I promise to document my own data carefully enough that another curious person would be able to interpret it.
+1. Ambiguously-labelled data is a problem. I thought understood my dataset after reading the code used to generate the results in the Nature paper, but maybe not. I promise to document my own data carefully enough that another curious person would be able to interpret it.
 
 2. Design the statistical test thoroughly before collecting data or writing the pipeline. I thought I had done this  well enough but my mind must still be more philosophical than statistical.
 
