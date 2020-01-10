@@ -127,14 +127,14 @@ While trying to make my computations faster, I reworked my pipeline function to 
 I also tested the speeds of several simple Spark functions for fun: `.filter()` and `.groupby()` are lazily-evaluated *transformations*, while `.count()` is an *action* and thus takes significantly longer to execute.
 
 <p align="center">
-  <img src="images/comparisons2.png" width = 750 height = 800>
+  <img src="images/comparison2.png" width = 750 height = 800>
 </p>
 
 `.filter()` and `.groupby()` appear to be approximately constant time. `.count()` is slower, but almost appears constant up to a certain point when it increases.
 
 Another interesting tidbit: the data graphed above actually omits the first datapoint on 10 samples. Below is the full data. I would guess that the first execution is longer either because the processor is switching tasks, or because Spark remembers something about the operation which makes subsequent executions of the same operation faster.
 <p align="center">
-  <img src="images/comparisons.png" width = 750 height = 800>
+  <img src="images/comparison.png" width = 750 height = 800>
 </p>
 
 [Back to top](#content)
