@@ -64,7 +64,7 @@ if __name__ == "__main__":
         ax.set_xlim(np.min(x) - .1, np.max(x) + .1)
         ax.set_xlabel(f"Probability of choosing default {factor}")
 
-        ax.hist(values, density=True, label=f"density (n = {len(means)})")
+        ax.hist(values, density=True, label=f"density plot (n = {len(means)})")
         mu, std = np.mean(values), np.std(values)
 
         ax.plot(x, stats.norm.pdf(x, loc=mu, scale=std), 'r-', alpha=0.8,\

@@ -18,7 +18,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', '--file', required=True,\
                          type=str, help='file of moral machine responses to process.')
+    parser.add_argument('-m', '--mode', default="bootstrap"
+                         type=str, help='Bootstrap individual samples from country means (bootstrap) \
+                         or use the country-level means only (mean). Default : bootstrap')
     args = vars(parser.parse_args())
+
+    fname = args['file']
 
     ## spark builder
     spark = (ps.sql.SparkSession.builder 
@@ -32,7 +37,6 @@ if __name__ == "__main__":
     ## loading responses with survey data into a spark dataframe
     ## SharedResponsesSurvey.csv has 11286141 rows
     bucketname = 'paxton-dsi-capstone-i'
-    fname = args['file']
     responses = loaddata(fname, spark, bucketname)
     responses = responses.select(["UserID", "UserCountry3", "Saved", "Intervention", "CrossingSignal",\
         "PedPed", "ScenarioType", "AttributeLevel"])
@@ -43,14 +47,12 @@ if __name__ == "__main__":
     pandas_cols = ["ISO3", "p_intervention", "n_intervention", "p_legality", "n_legality",\
                "p_util", "n_util", "p_gender", "n_gender", \
                "p_social", "n_social", "p_age", "n_age"]
-    factors = ["Intervention", "Legality", "Utilitarian", "Gender", "Social Status", "Age"]
     country_probs = pd.DataFrame(columns=pandas_cols)
 
-    sample_size = 39000
-
+    factors = ["Intervention", "Legality", "Utilitarian", "Gender", "Social Status", "Age"]
     for row in countries.collect():
         country = row.ISO3
-        country_responses = responses.filter(f"UserCountry3 = '{country}' ").limit(sample_size)
+        country_responses = responses.filter(f"UserCountry3 = '{country}' ")
 
         country_data_out = [str(country)]
 

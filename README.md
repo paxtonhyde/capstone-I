@@ -99,9 +99,9 @@ The *p*-values from an independent *t*-test with unequal variances for gender pr
 
 |       |      West |      East |     South |
 |-------|-----------|-----------|-----------|
-| West  | 0         | 0.0838754 | 0.281225  |
-| East  | 0.0838754 | 0         | 0.0147172 |
-| South | 0.281225  | 0.0147172 | 0         |
+| West  | -         | 0.0838754 | 0.281225  |
+| East  | 0.0838754 | -        | 0.0147172 |
+| South | 0.281225  | 0.0147172 | -         |
 
 > Sorry, Mike!
 
